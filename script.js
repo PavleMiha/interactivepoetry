@@ -1,8 +1,17 @@
+const Type = {
+    RevealAfterLink: 'RevealAfterLink',
+    RevealDownwards: 'RevealDownwards',
+    RevealRight: 'RevealRight',
+};
+
 class TextChunk {
-    constructor(linkShowing, animationProgress, text) {
+    constructor(linkShowing, animationProgress, type, x_offset, y_offset, text) {
         this.linkShowing = linkShowing;
         this.animationProgress = 0.0;
+        this.type = type;
         this.text = text;
+        this.x_offset = x_offset;
+        this.y_offset = y_offset;
     }
 }
 
@@ -11,9 +20,16 @@ $(document).ready(function () {
         history.scrollRestoration = 'manual';
     }
 
-    var lorem = new TextChunk(true, 0.0, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> ipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
     var textChunks = {};
+
+    var lorem = new TextChunk(true, 0.0, Type.RevealAfterLink, 0, 0, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> ipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
     textChunks["lorem"] = lorem;
+
+    var amet = new TextChunk(false, 0.0, Type.RevealDownwards, 9.2, 2, 'first line test\nsecond line test\nthird line test\nfourth line <a href="#" id="test">test</a>');
+    textChunks["amet"] = amet;
+
+    var test = new TextChunk(false, 0.0, Type.RevealAfterLink, 15.24, 8.41, '<span class="text-to-fade">and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on</span>');
+    textChunks["test"] = test;
 
     // Populate text in the divs
     function setContentSize(width, height) {
@@ -29,6 +45,31 @@ $(document).ready(function () {
         return { width, height };
     }
 
+    function getEffectiveContentDimensions(divElement) {
+        let maxHeight = 0;
+        let maxWidth = 0;
+
+        // Loop through each child element of the div
+        Array.from(divElement.children).forEach(child => {
+            const rect = child.getBoundingClientRect();
+            const position = window.getComputedStyle(child).position;
+            const parentRect = divElement.getBoundingClientRect();
+
+            // If the element is absolutely positioned, add its top and height for maxHeight
+            // and left and width for maxWidth
+            if (position === 'absolute') {
+                maxHeight = Math.max(maxHeight, rect.top - parentRect.top + rect.height);
+                maxWidth = Math.max(maxWidth, rect.left - parentRect.left + rect.width);
+            } else {
+                // For non-absolute elements, just consider their height and width as contributing to the parent div
+                maxHeight = Math.max(maxHeight, rect.height);
+                maxWidth = Math.max(maxWidth, rect.width);
+            }
+        });
+
+        return { height: maxHeight, width: maxWidth };
+    }
+
     var previousWidth = -1;
     var previousHeight = -1;
 
@@ -37,56 +78,33 @@ $(document).ready(function () {
 
         const divElement = document.querySelector('.text-content');
         if (divElement === null) return;
-        const textWidth = divElement.clientWidth;
-        const textHeight = divElement.clientHeight;
+        const { height, width } = getEffectiveContentDimensions(divElement);
 
         //console.log(`Width: ${textWidth}px, Height: ${textHeight}px`);
 
-        const newWidth = textWidth + window.innerWidth * 0.8;
-        const newHeight = textHeight + window.innerHeight * 0.8;
+        const newWidth = width + window.innerWidth;
+        const newHeight = height + window.innerHeight;
         setContentSize(newWidth, newHeight);
         if (previousWidth != -1 && previousHeight != -1) {
             if (previousWidth != newWidth) {
                 console.log("Width changed", previousWidth, newWidth, $(window).scrollLeft());
                 $(window).scrollLeft((newWidth - previousWidth) + $(window).scrollLeft());
             }
+            if (previousHeight != newHeight) {
+                console.log("Height changed", previousHeight, newHeight, $(window).scrollTop());
+                $(window).scrollTop((newHeight - previousHeight) + $(window).scrollTop());
+            }
         }
         previousWidth = newWidth;
         previousHeight = newHeight;
     }
 
-    // Set the start position to the center
-    const wrapper = $(".wrapper");
-    wrapper.scrollTop(window.innerHeight);
-    wrapper.scrollLeft(window.innerWidth);
-
     window.addEventListener("resize", function () {
     });
 
-    const textContainer = document.getElementsByClassName('.content');
-    let count = 1;
-
-    /*function updateText() {
-        $(".text-content").html(text.split(" ").slice(0, 10).join(" "));
-
-        count++;
-        if (count > 100) count = 1;
-        updateContentSize();
-        // Call the function again on the next animation frame
-        setTimeout(() => {
-            // Call the function again on the next animation frame after the delay
-            requestAnimationFrame(updateText);
-        }, 100);
-
-
-    }
-
-    // Start the animation
-    updateText();*/
-
     for (var tag in textChunks) {
+        console.log(tag, textChunks[tag].type)
         if (textChunks[tag].linkShowing) {
-            console.log("Showing link: ", tag);
             newdiv = document.createElement("div");
             newdiv.setAttribute("id", tag);
 
@@ -97,24 +115,67 @@ $(document).ready(function () {
             newdiv.innerHTML = textChunks[tag].text;
             $(".text-content").append(newdiv);
         }
+
         updateContentSize();
     }
 
-    $('a').click(function (event) {
-        event.preventDefault();
-    
-        const tagId = $(this).attr('id');
-    
-        if (tagId === undefined) return;
-        if (tagId in textChunks) {
-            $(`div[id="${tagId}"] .text-to-fade`).each(function () {
+    function addAnimatedLine(container, lineText, delay) {
+        console.log("addAnimatedLine", container, lineText, delay);
+
+        // Create a new jQuery element
+        const $lineDiv = $('<div></div>');
+        $lineDiv.html(lineText);
+        $lineDiv.addClass('hidden');
+
+        // Append the new element to the container
+        $(container).append($lineDiv);
+
+        // Check if the element is in the DOM
+        console.log("Is element in DOM?", $.contains(document.body, $lineDiv[0]));
+
+        // Delay the display of the line
+        setTimeout(() => {
+            console.log("Timeout executed. Applying styles...");
+
+            // Check if the element is still in the DOM
+            console.log("Is element still in DOM?", $.contains(document.body, $lineDiv[0]));
+
+            // Remove the hidden class and add animation classes
+            $lineDiv.removeClass('hidden').addClass('animate__animated animate__fadeIn');
+
+            // Log the computed opacity
+            const computedStyle = window.getComputedStyle($lineDiv[0]);
+            console.log("Computed opacity: ", computedStyle.opacity);
+
+        }, delay);
+    }
+
+    function revealChunk(tag, textChunk) {
+        console.log("revealChunk", textChunk);
+        if (textChunk.type === Type.RevealAfterLink) {
+            if ($(`div[id="${tag}"] .text-to-fade`).length == 0) {
+
+                newdiv = document.createElement("div");
+                newdiv.style.position = "absolute";
+
+                newdiv.style.top = textChunk.y_offset + "em";
+                newdiv.style.left = textChunk.x_offset + "em";
+
+                newdiv.setAttribute("id", tag);
+
+                // Convert the aElement back to string
+                newdiv.innerHTML = textChunks[tag].text;
+                $(".text-content").append(newdiv);
+            }
+
+            $(`div[id="${tag}"] .text-to-fade`).each(function () {
                 const $parentDiv = $(this).parent();
                 const $textToFade = $parentDiv.find('.text-to-fade');
                 $textToFade.css('display', 'inline'); // Make the text visible
-    
+
                 let delay = 0;
-    
-                $textToFade.contents().each(function() {
+
+                $textToFade.contents().each(function () {
                     if (this.nodeType === 3) { // Text node
                         const words = this.nodeValue.split(' ');
                         words.forEach(word => {
@@ -122,11 +183,11 @@ $(document).ready(function () {
                                 .text(word + ' ')
                                 .css('opacity', 0)
                                 .insertBefore(this);
-    
+
                             setTimeout(() => {
                                 wordSpan.css('opacity', 1).addClass('animate__animated animate__fadeIn');
                             }, delay);
-    
+
                             delay += 100; // 100ms delay between each word
                         });
                         $(this).remove();
@@ -139,6 +200,62 @@ $(document).ready(function () {
                     }
                 });
             });
+        }
+        if (textChunk.type === Type.RevealDownwards) {
+            $(`.text-content`).each(function () {
+                newdiv = document.createElement("div");
+                //newdiv.style.addClass("absolute-text")
+                newdiv.setAttribute("id", tag);
+                newdiv.style.position = "absolute";
+                newdiv.style.top = textChunk.y_offset + "em";
+                newdiv.style.left = textChunk.x_offset + "em";
+
+                const lines = textChunk.text.split('\n'); // Assuming text is split by '<p>'
+
+                let delay = 0; // Initialize delay
+                const delayIncrement = 800; // 1 second delay increment for each line
+
+                lines.forEach((line, index) => {
+                    // Wrap textChunk in <p> tags if it's not the first line
+                    const lineText = (index === 0) ? line : `<p>${line}`;
+                    const $lineDiv = $('<div></div>');
+                    $lineDiv.html(lineText);
+                    $lineDiv.addClass('hidden');
+
+                    // Append the new element to the container
+                    $(newdiv).append($lineDiv);
+
+                    // Delay the display of the line
+                    setTimeout(() => {
+                        // Remove the hidden class and add animation classes
+                        $lineDiv.removeClass('hidden').addClass('animate__animated animate__fadeIn');
+                    }, delay);
+                    // Increment the delay for the next line
+                    delay += delayIncrement;
+                });
+
+                $(this).append(newdiv);
+            });
+        }
+    }
+
+    if (false) {
+        for (var tag in textChunks) {
+            revealChunk(tag, textChunks[tag]);
+            updateContentSize();
+        }
+    }
+
+    $('body').on('click', 'a', function (event) {
+        console.log("clicked something");
+        event.preventDefault();
+
+        const tagId = $(this).attr('id');
+        console.log(tagId, "clicked");
+
+        if (tagId === undefined) return;
+        if (tagId in textChunks) {
+            revealChunk(tagId, textChunks[tagId]);
             updateContentSize();
         }
     });
@@ -148,9 +265,9 @@ $(document).ready(function () {
     function updateScroll() {
         const { width: contentWidth, height: contentHeight } = getContentSize();
 
-        console.log("Scroll: ", $(this).scrollLeft(), $(this).scrollTop());
-        console.log("Window: ", window.innerWidth, window.innerHeight);
-        console.log("Content ", contentWidth, contentHeight);
+        //console.log("Scroll: ", $(this).scrollLeft(), $(this).scrollTop());
+        //console.log("Window: ", window.innerWidth, window.innerHeight);
+        //console.log("Content ", contentWidth, contentHeight);
         if ($(this).scrollLeft() + window.innerWidth / 2.0 < contentWidth) {
             $(this).scrollLeft($(this).scrollLeft() + contentWidth);
         }
@@ -168,9 +285,14 @@ $(document).ready(function () {
         }
     };
 
-    window.addEventListener("scroll", updateScroll, false);
+    //window.addEventListener("scroll", updateScroll, false);
 
+    updateContentSize();
     updateScroll();
+    const { width: contentWidth, height: contentHeight } = getContentSize();
+    $(window).scrollLeft(contentWidth);
+    $(window).scrollTop(contentHeight);
+
     //$('.body').on('scroll', updateScroll);
 
     $("a").click(function (event) {
