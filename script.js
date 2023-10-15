@@ -160,6 +160,7 @@ $(document).ready(function () {
 
                 newdiv.style.top = textChunk.y_offset + "em";
                 newdiv.style.left = textChunk.x_offset + "em";
+                newdiv.style.whiteSpace = "nowrap";  // Prevent text wrapping
 
                 newdiv.setAttribute("id", tag);
 
@@ -285,7 +286,7 @@ $(document).ready(function () {
         }
     };
 
-    //window.addEventListener("scroll", updateScroll, false);
+    window.addEventListener("scroll", updateScroll, false);
 
     updateContentSize();
     updateScroll();
