@@ -1,50 +1,69 @@
+:root {
+    --content-width: 100vw;  /* Default horizontal size; you can change this */
+    --content-height: 100vh; /* Default vertical size; you can change this */
+}
+
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
-::-webkit-scrollbar { display: none; }
+/*::-webkit-scrollbar { display: none; }*/
 
 /* Hiding scrollbar for Chrome, Safari and Opera */
-body::-webkit-scrollbar {
+/*body::-webkit-scrollbar {
     display: none;
-}
+}*/
 
 /* Hiding scrollbar for IE, Edge and Firefox */
-body {
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-}
+/*body {
+  scrollbar-width: none;  /* Firefox /
+  -ms-overflow-style: none;  /* IE and Edge /
+}*/
 
 body {
     background-color: #111;  /* or whatever dark color you wish to use */
 }
 
+a {
+    color: inherit;
+}
+
+.text-to-fade {
+    display: none;
+}
+
 .wrapper {
-    width: 300vw;  /* 3 times the viewport width */
-    height: 300vh; /* 3 times the viewport height */
+    width: calc(3 * var(--content-width));  /* 3 times the horizontal content size */
+    height: calc(3 * var(--content-height));  /* 3 times the vertical content size */
 }
 
 .content {
     position: absolute;
-    width: 100vw;  
-    height: 100vh; 
+    width: var(--content-width);  
+    height: var(--content-height);
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     font-size: 1.5em;
     color: white;
+    text-wrap: nowrap;
+
 }
 
-.content:nth-child(1) { top: 0; left: 0; }        /* Top-left corner */
-.content:nth-child(2) { top: 0; left: 100vw; }    /* Top-center */
-.content:nth-child(3) { top: 0; left: 200vw; }    /* Top-right corner */
+.text-content {
+    margin-left: 500px;
+}
 
-.content:nth-child(4) { top: 100vh; left: 0; }    /* Middle-left */
-.content:nth-child(5) { top: 100vh; left: 100vw; }/* Center */
-.content:nth-child(6) { top: 100vh; left: 200vw; }/* Middle-right */
+.content:nth-child(1) { top: 0; left: 0; }        
+.content:nth-child(2) { top: 0; left: var(--content-width); }    
+.content:nth-child(3) { top: 0; left: calc(2 * var(--content-width)); }    
 
-.content:nth-child(7) { top: 200vh; left: 0; }    /* Bottom-left corner */
-.content:nth-child(8) { top: 200vh; left: 100vw; }/* Bottom-center */
-.content:nth-child(9) { top: 200vh; left: 200vw; }/* Bottom-right corner */
+.content:nth-child(4) { top: var(--content-height); left: 0; }   
+.content:nth-child(5) { top: var(--content-height); left: var(--content-width); }
+.content:nth-child(6) { top: var(--content-height); left: calc(2 * var(--content-width)); }
+
+.content:nth-child(7) { top: calc(2 * var(--content-height)); left: 0; }    
+.content:nth-child(8) { top: calc(2 * var(--content-height)); left: var(--content-width); }
+.content:nth-child(9) { top: calc(2 * var(--content-height)); left: calc(2 * var(--content-width)); }
