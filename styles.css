@@ -61,7 +61,6 @@ a.visited {
     display: flex;
     justify-content: left;
     align-items: top;
-
     color: white;
     text-wrap: nowrap;
     margin-top: 47vh;

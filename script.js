@@ -37,10 +37,10 @@ $(document).ready(function () {
     var on2 = new TextChunk(false, Type.RevealVertical, 60.7, 10.9, true, 'a small poem\nemerges\ndownwards');
     textChunks["on2"] = on2;
 
-    var on3 = new TextChunk(false, Type.RevealVertical, 84.7, 0.1, false, '<a href="#" id="pavle">I<\a> love you loads\nthank you\nfor my baby\nthis is a secret');
+    var on3 = new TextChunk(false, Type.RevealVertical, 84.7, 0.0, false, '<a href="#" id="pavle">I<\a> love you loads\nthank you\nfor my baby\nthis is a secret');
     textChunks["on3"] = on3;
 
-    var pavle = new TextChunk(false, Type.RevealAfterLink, 69.3, 0.1, false, '<span class="text-to-fade">My name is Pavle and I\'m here to say');
+    var pavle = new TextChunk(false, Type.RevealAfterLink, 23, 0.0, false, '<span class="text-to-fade">Aaaaaaand we\'re right back at the beginning! Where are we going? Follow me, we\'re going on an adventure! Right! My name is Pavle and I\'m here to say');
     textChunks["pavle"] = pavle;
 
     // Populate text in the divs
@@ -263,7 +263,7 @@ $(document).ready(function () {
             revealChunk(tagId, textChunks[tagId]);
             updateContentSize();
         }
-        $(this).addClass('visited');
+        $(`a[id='${tagId}']`).addClass('visited');
     });
 
     updateContentSize();
