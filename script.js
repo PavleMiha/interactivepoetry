@@ -22,7 +22,7 @@ $(document).ready(function () {
 
     var textChunks = {};
 
-    var lorem = new TextChunk(true, 0.0, Type.RevealAfterLink, 0, 0, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> ipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
+    var lorem = new TextChunk(true, 0.0, Type.RevealAfterLink, 0, 0, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> bipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
     textChunks["lorem"] = lorem;
 
     var amet = new TextChunk(false, 0.0, Type.RevealDownwards, 9.2, 2, 'first line test\nsecond line test\nthird line test\nfourth line <a href="#" id="test">test</a>');
@@ -160,7 +160,9 @@ $(document).ready(function () {
 
                 newdiv.style.top = textChunk.y_offset + "em";
                 newdiv.style.left = textChunk.x_offset + "em";
-                newdiv.style.whiteSpace = "nowrap";  // Prevent text wrapping
+                newdiv.style.textWrap = "none";
+                newdiv.style.whiteSpace = "nowrap !important";  // Prevent text wrapping
+                newdiv.style.overflowX = "auto";
 
                 newdiv.setAttribute("id", tag);
 
