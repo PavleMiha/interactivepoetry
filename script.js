@@ -1,17 +1,17 @@
 const Type = {
     RevealAfterLink: 'RevealAfterLink',
-    RevealDownwards: 'RevealDownwards',
+    RevealVertical: 'RevealVertical',
     RevealRight: 'RevealRight',
 };
 
 class TextChunk {
-    constructor(linkShowing, animationProgress, type, x_offset, y_offset, text) {
+    constructor(linkShowing, type, x_offset, y_offset, originalDirection, text) {
         this.linkShowing = linkShowing;
-        this.animationProgress = 0.0;
         this.type = type;
         this.text = text;
         this.x_offset = x_offset;
         this.y_offset = y_offset;
+        this.originalDirection = originalDirection;
     }
 }
 
@@ -22,14 +22,26 @@ $(document).ready(function () {
 
     var textChunks = {};
 
-    var lorem = new TextChunk(true, 0.0, Type.RevealAfterLink, 0, 0, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> bipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
+    var lorem = new TextChunk(true, Type.RevealAfterLink, 0, 0, true, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> bipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
     textChunks["lorem"] = lorem;
 
-    var amet = new TextChunk(false, 0.0, Type.RevealDownwards, 9.2, 2, 'first line test\nsecond line test\nthird line test\nfourth line <a href="#" id="test">test</a>');
+    var amet = new TextChunk(false, Type.RevealVertical, 9.65, 2, true, 'first line test\nsecond line test\nthird line test\nfourth line <a href="#" id="test">test</a>');
     textChunks["amet"] = amet;
 
-    var test = new TextChunk(false, 0.0, Type.RevealAfterLink, 15.24, 8.41, '<span class="text-to-fade">and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on and so on and so on and on and on</span>');
+    var test = new TextChunk(false, Type.RevealAfterLink, 15.7, 8.9, true, '<span class="text-to-fade">and so on and so on and on and on and so on and so <a href="#" id="on1">on</a> and on and on and so on and so on and on and on and so <a href="#" id="on2">on</a> and so on and on and on and so on and so on and on and <a href="#" id="on3">on</a> and so on and so on and on and on</span>');
     textChunks["test"] = test;
+
+    var on1 = new TextChunk(false, Type.RevealVertical, 36.7, 2.4, false, 'a small poem\nemerges\nupwards');
+    textChunks["on1"] = on1;
+
+    var on2 = new TextChunk(false, Type.RevealVertical, 60.7, 10.9, true, 'a small poem\nemerges\ndownwards');
+    textChunks["on2"] = on2;
+
+    var on3 = new TextChunk(false, Type.RevealVertical, 84.7, 0.1, false, '<a href="#" id="pavle">I<\a> love you loads\nthank you\nfor my baby\nthis is a secret');
+    textChunks["on3"] = on3;
+
+    var pavle = new TextChunk(false, Type.RevealAfterLink, 69.3, 0.1, false, '<span class="text-to-fade">My name is Pavle and I\'m here to say');
+    textChunks["pavle"] = pavle;
 
     // Populate text in the divs
     function setContentSize(width, height) {
@@ -119,39 +131,10 @@ $(document).ready(function () {
         updateContentSize();
     }
 
-    function addAnimatedLine(container, lineText, delay) {
-        console.log("addAnimatedLine", container, lineText, delay);
-
-        // Create a new jQuery element
-        const $lineDiv = $('<div></div>');
-        $lineDiv.html(lineText);
-        $lineDiv.addClass('hidden');
-
-        // Append the new element to the container
-        $(container).append($lineDiv);
-
-        // Check if the element is in the DOM
-        console.log("Is element in DOM?", $.contains(document.body, $lineDiv[0]));
-
-        // Delay the display of the line
-        setTimeout(() => {
-            console.log("Timeout executed. Applying styles...");
-
-            // Check if the element is still in the DOM
-            console.log("Is element still in DOM?", $.contains(document.body, $lineDiv[0]));
-
-            // Remove the hidden class and add animation classes
-            $lineDiv.removeClass('hidden').addClass('animate__animated animate__fadeIn');
-
-            // Log the computed opacity
-            const computedStyle = window.getComputedStyle($lineDiv[0]);
-            console.log("Computed opacity: ", computedStyle.opacity);
-
-        }, delay);
-    }
-
     function revealChunk(tag, textChunk) {
         console.log("revealChunk", textChunk);
+        if (textChunk.revealed) return;
+        textChunk.revealed = true;
         if (textChunk.type === Type.RevealAfterLink) {
             if ($(`div[id="${tag}"] .text-to-fade`).length == 0) {
 
@@ -177,6 +160,26 @@ $(document).ready(function () {
                 $textToFade.css('display', 'inline'); // Make the text visible
 
                 let delay = 0;
+                let delayIncrement = 100;
+                if (!textChunk.originalDirection) {
+                    let count = 0;
+                    $textToFade.contents().each(function () {
+                        if (this.nodeType === 3) { // Text node
+                            const words = this.nodeValue.split(' ');
+                            words.forEach(word => {
+                                count++;
+                            });
+                        } else if (this.nodeType === 1) { // HTML element
+                            count++;
+                        }
+                    });
+
+                    console.log("Count: ", count);
+                    console.log("Delay: ", delay, " DelayIncrement: ", delayIncrement);
+                    
+                    delay = (count - 1) * delayIncrement;
+                    delayIncrement *= -1;
+                }
 
                 $textToFade.contents().each(function () {
                     if (this.nodeType === 3) { // Text node
@@ -191,7 +194,7 @@ $(document).ready(function () {
                                 wordSpan.css('opacity', 1).addClass('animate__animated animate__fadeIn');
                             }, delay);
 
-                            delay += 100; // 100ms delay between each word
+                            delay += delayIncrement; // 100ms delay between each word
                         });
                         $(this).remove();
                     } else if (this.nodeType === 1) { // HTML element
@@ -199,12 +202,12 @@ $(document).ready(function () {
                         setTimeout(() => {
                             $(this).css('opacity', 1).addClass('animate__animated animate__fadeIn');
                         }, delay);
-                        delay += 100;
+                        delay += delayIncrement;
                     }
                 });
             });
         }
-        if (textChunk.type === Type.RevealDownwards) {
+        if (textChunk.type === Type.RevealVertical) {
             $(`.text-content`).each(function () {
                 newdiv = document.createElement("div");
                 //newdiv.style.addClass("absolute-text")
@@ -216,7 +219,12 @@ $(document).ready(function () {
                 const lines = textChunk.text.split('\n'); // Assuming text is split by '<p>'
 
                 let delay = 0; // Initialize delay
-                const delayIncrement = 800; // 1 second delay increment for each line
+                let delayIncrement = 800; // 1 second delay increment for each line
+
+                if (!textChunk.originalDirection) {
+                    delay = (lines.length - 1) * delayIncrement;
+                    delayIncrement *= -1;
+                }
 
                 lines.forEach((line, index) => {
                     // Wrap textChunk in <p> tags if it's not the first line
@@ -242,12 +250,6 @@ $(document).ready(function () {
         }
     }
 
-    if (false) {
-        for (var tag in textChunks) {
-            revealChunk(tag, textChunks[tag]);
-            updateContentSize();
-        }
-    }
 
     $('body').on('click', 'a', function (event) {
         console.log("clicked something");
@@ -261,6 +263,7 @@ $(document).ready(function () {
             revealChunk(tagId, textChunks[tagId]);
             updateContentSize();
         }
+        $(this).addClass('visited');
     });
 
     updateContentSize();
@@ -288,6 +291,32 @@ $(document).ready(function () {
         }
     };
 
+    
+    $(document).keydown(function (event) {
+        if (event.key === 'p') {
+            for (var tag in textChunks) {
+                revealChunk(tag, textChunks[tag]);
+                updateContentSize();
+            }
+        }
+    });
+
+    $(document).click(function (event) {
+        const div = $(".content.bottom-right .text-content")[0];
+        console.log(div);
+        const rect = div.getBoundingClientRect();
+        console.log(rect);
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+      
+        const style = window.getComputedStyle(div, null).getPropertyValue('font-size');
+        console.log(style);
+        const fontSize = parseFloat(style);
+        console.log(fontSize);
+      
+        console.log(`X: ${x / fontSize}em, Y: ${y / fontSize}em`);
+    });
+
     window.addEventListener("scroll", updateScroll, false);
 
     updateContentSize();
@@ -297,8 +326,4 @@ $(document).ready(function () {
     $(window).scrollTop(contentHeight);
 
     //$('.body').on('scroll', updateScroll);
-
-    $("a").click(function (event) {
-        event.preventDefault();
-    });
 });

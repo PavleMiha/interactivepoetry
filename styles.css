@@ -34,6 +34,11 @@ a {
     color: inherit;
 }
 
+a.visited {
+    text-decoration-color: gray;
+    /* You might have to hard-code this value as darken is from Sass */
+}
+
 .text-to-fade {
     display: none;
 }
@@ -56,11 +61,13 @@ a {
     display: flex;
     justify-content: left;
     align-items: top;
-    font-size: 1.5em;
+
     color: white;
     text-wrap: nowrap;
-    margin-top: 48vh;
-    margin-left: 48vw;
+    margin-top: 47vh;
+    margin-left: 33vw;
+    font-size: 1.5em;
+    line-height: 1.3em;
 }
 
 .text-content {}
