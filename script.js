@@ -16,7 +16,6 @@ class TextChunk {
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
-    return;
     console.log("Running something");   
     const commitElement = document.createElement('div');
     commitElement.innerHTML = `Commit: ` + COMMIT_HASH.slice(-8);
