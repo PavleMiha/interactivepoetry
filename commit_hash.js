@@ -1,1 +1,1 @@
-const COMMIT_HASH = '9cd81e19365cfc8903a4a0c3a73ef205d00f434d';
+const COMMIT_HASH = 'bf2aa72be4d4b64261b4b8590fee2f2e97815f65';
