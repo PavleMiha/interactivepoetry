@@ -15,7 +15,20 @@ class TextChunk {
     }
 }
 
+window.addEventListener('DOMContentLoaded', (event) => {
+    return;
+    console.log("Running something");   
+    const commitElement = document.createElement('div');
+    commitElement.innerHTML = `Commit: ` + COMMIT_HASH.slice(-8);
+    commitElement.style.position = 'fixed';
+    commitElement.style.top = '0';
+    commitElement.style.right = '0';
+    commitElement.style.color = 'gray';
+    document.body.appendChild(commitElement);
+});
+
 $(document).ready(function () {
+    
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
@@ -324,6 +337,7 @@ $(document).ready(function () {
     const { width: contentWidth, height: contentHeight } = getContentSize();
     $(window).scrollLeft(contentWidth);
     $(window).scrollTop(contentHeight);
+
 
     //$('.body').on('scroll', updateScroll);
 });
