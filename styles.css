@@ -62,7 +62,7 @@ a.visited {
     justify-content: left;
     align-items: top;
     color: white;
-    text-wrap: nowrap;
+    white-space: nowrap;
     margin-top: 47vh;
     margin-left: 33vw;
     font-size: 1.5em;
