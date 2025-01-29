@@ -15,7 +15,7 @@ class TextChunk {
     }
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
+/*window.addEventListener('DOMContentLoaded', (event) => {
     console.log("Running something");   
     const commitElement = document.createElement('div');
     commitElement.innerHTML = `Commit: ` + COMMIT_HASH.slice(-8);
@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     commitElement.style.right = '0';
     commitElement.style.color = 'gray';
     document.body.appendChild(commitElement);
-});
+});*/
 
 $(document).ready(function () {
     
