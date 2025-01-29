@@ -34,27 +34,102 @@ $(document).ready(function () {
 
     var textChunks = {};
 
-    var lorem = new TextChunk(true, Type.RevealAfterLink, 0, 0, true, '<a href="#" id="lorem">Lorem</a><span class="text-to-fade"> bipsum dolor sit <a href="#" id="amet">amet</a>, consectetur adipiscing elit.</span>');
-    textChunks["lorem"] = lorem;
+    var x = 0;
+    var y = 0;
+    var touch = new TextChunk(true, Type.RevealAfterLink, x, y, false, '<a href="#" id="they_call">touch</a>');
+    textChunks["touch"] = touch;
 
-    var amet = new TextChunk(false, Type.RevealVertical, 9.65, 2, true, 'first line test\nsecond line test\nthird line test\nfourth line <a href="#" id="test">test</a>');
-    textChunks["amet"] = amet;
+    x += -5.7;
+    //var they_call = new TextChunk(true, Type.RevealVertical, 0, 0, true, '<span class="text-to-fade"><a href="#" id="they">They</a> call this </span>');
+    var they_call = new TextChunk(false, Type.RevealAfterLink, x, y, false, '<span class="text-to-fade"><a href="#" id="they">They</a> call this ');
+    textChunks["they_call"] = they_call;
 
-    var test = new TextChunk(false, Type.RevealAfterLink, 15.7, 8.9, true, '<span class="text-to-fade">and so on and so on and on and on and so on and so <a href="#" id="on1">on</a> and on and on and so on and so on and on and on and so <a href="#" id="on2">on</a> and so on and on and on and so on and so on and on and <a href="#" id="on3">on</a> and so on and so on and on and on</span>');
-    textChunks["test"] = test;
+    y += 2.0;
+    var they = new TextChunk(false, Type.RevealVertical, x, y, true, 'call\nthis\nintimacy.\nBut <a href="#" id="you1">you</a>…');
+    textChunks["they"] = they;
 
-    var on1 = new TextChunk(false, Type.RevealVertical, 36.7, 2.4, false, 'a small poem\nemerges\nupwards');
-    textChunks["on1"] = on1;
+    x += 4.6;
+    y += 6.9;
+    var you1 = new TextChunk(false, Type.RevealAfterLink, x, y, true, '<span class="text-to-fade">You call it, “the <a href="#" id="back">back</a>.” You believe you’ve always been <a href="#" id="inside">inside</a> out.');
+    textChunks["you1"] = you1;
+    
+    var x1 = x + 6.55;
+    var y1 = y - 23;
+    var back = new TextChunk(false, Type.RevealVertical, x1, y1, true, '<a href="#" id="sound">You</a>\nhave\nmemorised\nthe\nway\nit\nfeels\nto\nhave\nthe\n&nbsp\nof\nyour\nskin\nagainst\nthe\nback\nof\n someone\nelse’s.');
+    textChunks["back"] = back;
 
-    var on2 = new TextChunk(false, Type.RevealVertical, 60.7, 10.9, true, 'a small poem\nemerges\ndownwards');
-    textChunks["on2"] = on2;
+    var x2 = x + 22.7;
+    var y2 = y - 27.4;
+    var inside = new TextChunk(false, Type.RevealVertical, x2, y2, true, 'The\ntruest\nface\nof\n<a href="#" id="you2">you</a>\nhas\nalways\nbeen\nhidden,\nsquished\nagainst\nyour\ninsides,\n<a href="#" id="yours">yours</a>\nalone.');
+    textChunks["inside"] = inside;
 
-    var on3 = new TextChunk(false, Type.RevealVertical, 84.7, 0.0, false, '<a href="#" id="pavle">I<\a> love you loads\nthank you\nfor my baby\nthis is a secret');
-    textChunks["on3"] = on3;
+    var yoursx = x2 - 8.45;
+    var yoursy = y2 + 29.9;
+    var yours = new TextChunk(false, Type.RevealVertical, yoursx, yoursy, true, 'The last time you let &nbsp &nbsp &nbsp &nbsp&nbsp elf fall apart you were alone in a bathroom stall. You remember <a href="#" id="wanting">wanting</a> to cry.');
+    textChunks["yours"] = yours;
 
-    var pavle = new TextChunk(false, Type.RevealAfterLink, 23, 0.0, false, '<span class="text-to-fade">Aaaaaaand we\'re right back at the beginning! Where are we going? Follow me, we\'re going on an adventure! Right! My name is Pavle and I\'m here to say');
-    textChunks["pavle"] = pavle;
+    var wantingx = yoursx+36.2;
+    var wantingy = yoursy+2;
+    var wanting = new TextChunk(false, Type.RevealVertical, wantingx, wantingy, true, 'to bleed,\nvomit,\nrupture from the pain\nof being in\n<a href="#" id="yourlimbs">your</a>\nbody but\n<a href="#" id="youwill">you</a>\njust sat there.')
+    textChunks["wanting"] = wanting;
 
+    var yourlimbsx = wantingx+2.1;
+    var yourlimbsy = wantingy+9.21;
+    var yourlimbs = new TextChunk(false, Type.RevealAfterLink, yourlimbsx, yourlimbsy, true, "limbs are precisely the length it takes to wrap around my frame and hold onto yourself.")
+    textChunks["yourlimbs"] = yourlimbs;
+
+    var youwillx = wantingx+1.73;
+    var youwilly = wantingy+13.80;
+    var youwill = new TextChunk(false, Type.RevealAfterLink, youwillx, youwilly, true, 'will always weigh exactly how much <a href="#" id="soeven">I</a> can carry.')
+    textChunks["youwill"] = youwill;
+
+    var soevenx = youwillx+15.1;
+    var soeveny = youwilly-2.25;
+    var soeven = new TextChunk(false, Type.RevealVertical, soevenx, soeveny, true, 'So, even as\n&nbsp\npick\n<a href="#" id="careful">you</a>\nup,\nmove\n<a href="#" id="scream">you</a>\naround')
+    textChunks["soeven"] = soeven;
+
+    var carefulx = soevenx+1.8;
+    var carefuly = soeveny+6.9;
+    var careful = new TextChunk(false, Type.RevealAfterLink, carefulx, carefuly, true, 'are careful not to kick me. Careful not to interrupt <a href="#" id="thiscommunity">this</a> connection.')
+    textChunks["careful"] = careful;
+
+    var thiscommunityx = carefulx+20.4;
+    var thiscommunityy = carefuly-4.6;
+    var thiscommunity = new TextChunk(false, Type.RevealVertical, thiscommunityx, thiscommunityy, true, '<a href="#" id="thisgod">They</a>\n<a href="#" id="final">call</a>\n&nbsp\ncommunity.')
+    textChunks["thiscommunity"] = thiscommunity;
+
+    
+    var finalx = thiscommunityx-2.3;
+    var finaly = thiscommunityy+2.3;
+    var final = new TextChunk(false, Type.RevealVertical, finalx, finaly, true, 'They &nbsp &nbsp &nbsp&nbsp this trust, vulnerability, confidence, stupidity, recklessness, independence, faith, autonomy, love, lust, dependence, family, freedom.')
+    textChunks["final"] = final;
+
+    var thisgodx = thiscommunityx+2.3;
+    var thisgody = thiscommunityy;
+    var thisgod = new TextChunk(false, Type.RevealAfterLink, thisgodx, thisgody, true, 'call this God.')
+    textChunks["thisgod"] = thisgod;
+
+    var screamx = soevenx-5.05;
+    var screamy = soeveny+13.82;
+    var scream = new TextChunk(false, Type.RevealAfterLink, screamx, screamy, true, '<a href="#" id="outside">This</a> is how &nbsp &nbsp &nbsp &nbsp scream.')
+    textChunks["scream"] = scream;
+
+    var outsidex = screamx;
+    var outsidey = screamy+2;
+    var outside = new TextChunk(false, Type.RevealVertical, outsidex, outsidey, true, 'is\nhow\nyou turn outside-in:\nby making sure there is enough\nof you, outside of and apart from you,\nto find you,\nevidence you, hear you.')
+    textChunks["outside"] = outside;
+
+
+    var you2x = x2 + 1.8;
+    var you2y = y2 + 9.2;
+    var you2 = new TextChunk(false, Type.RevealAfterLink, you2x, you2y, true, '<span class="text-to-fade">have never known when or how to scream.');
+    textChunks["you2"] = you2;
+
+    var soundx = x1 - 61.1;
+    var soundy = y1;
+    var sound = new TextChunk(false, Type.RevealAfterLink, soundx, soundy, false, '<span class="text-to-fade">Leaving mind, entering mouth, only to be swallowed back down heavy, rock bottom before ever reaching, exiting teeth. Sound travels the wrong way in');
+    textChunks["sound"] = sound;
+    
     // Populate text in the divs
     function setContentSize(width, height) {
         document.documentElement.style.setProperty('--content-width', `${width}px`);
@@ -172,7 +247,7 @@ $(document).ready(function () {
                 $textToFade.css('display', 'inline'); // Make the text visible
 
                 let delay = 0;
-                let delayIncrement = 100;
+                let delayIncrement = 300;//todo go back to 100
                 if (!textChunk.originalDirection) {
                     let count = 0;
                     $textToFade.contents().each(function () {
@@ -231,7 +306,7 @@ $(document).ready(function () {
                 const lines = textChunk.text.split('\n'); // Assuming text is split by '<p>'
 
                 let delay = 0; // Initialize delay
-                let delayIncrement = 800; // 1 second delay increment for each line
+                let delayIncrement = 300; //todo 1 second delay increment for each line
 
                 if (!textChunk.originalDirection) {
                     delay = (lines.length - 1) * delayIncrement;
@@ -328,6 +403,12 @@ $(document).ready(function () {
       
         console.log(`X: ${x / fontSize}em, Y: ${y / fontSize}em`);
     });
+
+    // Reveal all chunks initially
+    /*for (var tag in textChunks) {
+        revealChunk(tag, textChunks[tag]);
+        updateContentSize();
+    }*/
 
     window.addEventListener("scroll", updateScroll, false);
 
